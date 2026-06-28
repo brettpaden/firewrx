@@ -1,16 +1,16 @@
-import { PX_PER_SEC } from '../constants.js'
+import { TRACK_CONTROLS_WIDTH } from '../constants.js'
 import { useShowStore } from '../store/useShowStore.js'
 
-// Vertical cursor spanning ruler + waveform + all tracks. Position is driven by the
-// store's currentTime, which wavesurfer updates on every 'timeupdate'.
+// Vertical cursor spanning ruler + waveform + all tracks.
 export default function Playhead() {
   const currentTime = useShowStore((s) => s.currentTime)
+  const pxPerSec = useShowStore((s) => s.pxPerSec)
 
   return (
     <div
       style={{
         position: 'absolute',
-        left: currentTime * PX_PER_SEC,
+        left: TRACK_CONTROLS_WIDTH + currentTime * pxPerSec,
         top: 0,
         bottom: 0,
         width: 2,

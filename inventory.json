@@ -3,7 +3,7 @@
   "generated_from": "inventory/view-source_...order_id=46524.html + cakewatcher/products.json",
   "line_item_count": 23,
   "matched_count": 13,
-  "video_count": 13,
+  "video_count": 21,
   "inventory": [
     {
       "id": 1,
@@ -33,6 +33,7 @@
       "id": 4,
       "product_name": "Bulk Shells - 6 Pack Nishiki Willow Series 5\"",
       "quantity": 2,
+      "inventory_count": 18,
       "matched": false,
       "product_url": null,
       "thumbnail": null
@@ -66,6 +67,7 @@
       "product_name": "Fast Sticky Match - 60 Ft. Roll",
       "quantity": 1,
       "matched": false,
+      "exclude_from_inventory": true,
       "product_url": null,
       "thumbnail": null
     },
@@ -73,6 +75,7 @@
       "id": 9,
       "product_name": "Bulk Shells - 6 Pack Assorted Ring Effect (No Tubes)",
       "quantity": 2,
+      "inventory_count": 18,
       "matched": false,
       "product_url": null,
       "thumbnail": null
@@ -121,6 +124,7 @@
       "id": 15,
       "product_name": "Bulk Shells - 5\" Assorted Nishiki Willow Effect (Pack of 24)",
       "quantity": 2,
+      "inventory_count": 24,
       "matched": false,
       "product_url": null,
       "thumbnail": null
@@ -170,6 +174,7 @@
       "product_name": "MJG Firewire Initiator: 2 Meter (6 Foot) without Quickplug - Box of 40",
       "quantity": 2,
       "matched": false,
+      "exclude_from_inventory": true,
       "product_url": null,
       "thumbnail": null
     },
@@ -195,104 +200,168 @@
       "inventory_id": 1,
       "youtube_id": "Kt6Gan2dH84",
       "video_file": "videos/Kt6Gan2dH84.mp4",
-      "trim_start": 0.0,
-      "trim_end": 46.5,
+      "trim_start": 5.07,
+      "trim_end": 40.67,
       "source_missing": false
     },
     {
       "inventory_id": 2,
       "youtube_id": "9dB2gY8J77Q",
       "video_file": "videos/9dB2gY8J77Q.mp4",
-      "trim_start": 13.7,
-      "trim_end": 79.5,
+      "trim_start": 0,
+      "trim_end": 80.27,
       "source_missing": false
     },
     {
       "inventory_id": 3,
       "youtube_id": "4EEG6YhrJdk",
       "video_file": "videos/4EEG6YhrJdk.mp4",
-      "trim_start": 4.51,
-      "trim_end": 41.71,
+      "trim_start": 12.6,
+      "trim_end": 42.61,
+      "source_missing": false
+    },
+    {
+      "inventory_id": 4,
+      "youtube_id": "willow_shells_1",
+      "video_file": "videos/willow_shells_1.mp4",
+      "trim_start": 14.35,
+      "trim_end": 21.45,
       "source_missing": false
     },
     {
       "inventory_id": 5,
       "youtube_id": "Zty4H3cu_G4",
       "video_file": "videos/Zty4H3cu_G4.mp4",
-      "trim_start": 6.51,
-      "trim_end": 19.87,
+      "trim_start": 5.22,
+      "trim_end": 21.18,
       "source_missing": false
     },
     {
       "inventory_id": 6,
       "youtube_id": "XpPqZt89o7I",
       "video_file": "videos/XpPqZt89o7I.mp4",
-      "trim_start": 6.18,
-      "trim_end": 19.03,
+      "trim_start": 5.11,
+      "trim_end": 21.82,
       "source_missing": false
     },
     {
       "inventory_id": 7,
       "youtube_id": "FdY8QxzGRpw",
       "video_file": "videos/FdY8QxzGRpw.mp4",
-      "trim_start": 5.01,
-      "trim_end": 10.34,
+      "trim_start": 11.48,
+      "trim_end": 28,
+      "source_missing": false
+    },
+    {
+      "inventory_id": 9,
+      "youtube_id": "ring_shells",
+      "video_file": "videos/ring_shells.mp4",
+      "trim_start": 10.37,
+      "trim_end": 14.46,
       "source_missing": false
     },
     {
       "inventory_id": 10,
       "youtube_id": "oE3ot6N2MN8",
       "video_file": "videos/oE3ot6N2MN8.mp4",
-      "trim_start": 5.17,
-      "trim_end": 30.7,
+      "trim_start": 9.98,
+      "trim_end": 35.31,
       "source_missing": false
     },
     {
       "inventory_id": 11,
       "youtube_id": "fz1XANLwefY",
       "video_file": "videos/fz1XANLwefY.mp4",
-      "trim_start": 4.51,
-      "trim_end": 26.03,
+      "trim_start": 6.61,
+      "trim_end": 28.9,
       "source_missing": false
     },
     {
       "inventory_id": 12,
       "youtube_id": "_73oGmariYg",
       "video_file": "videos/_73oGmariYg.mp4",
-      "trim_start": 4.33,
-      "trim_end": 52.17,
+      "trim_start": 6.54,
+      "trim_end": 53.97,
       "source_missing": false
     },
     {
       "inventory_id": 13,
       "youtube_id": "pgb0pl-SjF8",
       "video_file": "videos/pgb0pl-SjF8.mp4",
-      "trim_start": 0.0,
-      "trim_end": 39.37,
+      "trim_start": 4.4,
+      "trim_end": 40.91,
       "source_missing": false
     },
     {
       "inventory_id": 14,
       "youtube_id": "bB-blwkfk0o",
       "video_file": "videos/bB-blwkfk0o.mp4",
-      "trim_start": 4.51,
-      "trim_end": 29.53,
+      "trim_start": 7.45,
+      "trim_end": 25.01,
+      "source_missing": false
+    },
+    {
+      "inventory_id": 15,
+      "youtube_id": "willow_shells_2",
+      "video_file": "videos/willow_shells_2.mp4",
+      "trim_start": 10.38,
+      "trim_end": 15.83,
       "source_missing": false
     },
     {
       "inventory_id": 16,
       "youtube_id": "PPi_L6teyJ8",
       "video_file": "videos/PPi_L6teyJ8.mp4",
-      "trim_start": 5.34,
-      "trim_end": 19.53,
+      "trim_start": 10.1,
+      "trim_end": 21.13,
+      "source_missing": false
+    },
+    {
+      "inventory_id": 17,
+      "youtube_id": "red_silver_comet",
+      "video_file": "videos/red_silver_comet.mp4",
+      "trim_start": 10.05,
+      "trim_end": 13.38,
+      "source_missing": false
+    },
+    {
+      "inventory_id": 18,
+      "youtube_id": "red_gold_comet",
+      "video_file": "videos/red_gold_comet.mp4",
+      "trim_start": 10.09,
+      "trim_end": 15.38,
+      "source_missing": false
+    },
+    {
+      "inventory_id": 19,
+      "youtube_id": "red_comet",
+      "video_file": "videos/red_comet.mp4",
+      "trim_start": 9.85,
+      "trim_end": 15.73,
       "source_missing": false
     },
     {
       "inventory_id": 20,
       "youtube_id": "bonAiCqdA2s",
       "video_file": "videos/bonAiCqdA2s.mp4",
-      "trim_start": 4.33,
-      "trim_end": 35.33,
+      "trim_start": 5.09,
+      "trim_end": 35.31,
+      "source_missing": false
+    },
+    {
+      "inventory_id": 22,
+      "youtube_id": "double_down",
+      "video_file": "videos/double_down.mp4",
+      "trim_start": 10.29,
+      "trim_end": 41.02,
+      "source_missing": false
+    },
+    {
+      "inventory_id": 23,
+      "youtube_id": "ringside",
+      "video_file": "videos/ringside.mp4",
+      "trim_start": 4.47,
+      "trim_end": 37.57,
       "source_missing": false
     }
   ]

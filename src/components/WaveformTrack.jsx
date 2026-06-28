@@ -1,63 +1,90 @@
 import { useEffect, useRef } from 'react'
 import WaveSurfer from 'wavesurfer.js'
-import { PX_PER_SEC } from '../constants.js'
+import { wireAudioClock } from '../audioClock.js'
 import { useShowStore } from '../store/useShowStore.js'
 
-// Owns the single wavesurfer instance (the app's audio engine + clock). Renders at
-// the shared scale via minPxPerSec + fillParent:false so its width equals
-// audioDuration × PX_PER_SEC and lines up with the ruler and tracks.
-export default function WaveformTrack({ wsRef, totalSeconds }) {
+// Owns the single wavesurfer instance (the app's audio engine). The HTMLMediaElement
+// is the source of truth for playback time.
+export default function WaveformTrack({ wsRef, laneWidth }) {
   const containerRef = useRef(null)
   const audioUrl = useShowStore((s) => s.audioUrl)
+  const pxPerSec = useShowStore((s) => s.pxPerSec)
+  const duration = useShowStore((s) => s.duration)
   const setDuration = useShowStore((s) => s.setDuration)
   const setCurrentTime = useShowStore((s) => s.setCurrentTime)
   const setIsPlaying = useShowStore((s) => s.setIsPlaying)
 
-  // Create the wavesurfer instance once.
+  const pxPerSecRef = useRef(pxPerSec)
+  pxPerSecRef.current = pxPerSec
+
   useEffect(() => {
     const ws = WaveSurfer.create({
       container: containerRef.current,
       height: 64,
       waveColor: '#5a6473',
-      progressColor: '#5a6473', // we draw our own playhead; keep progress neutral
+      progressColor: '#5a6473',
       cursorWidth: 0,
-      minPxPerSec: PX_PER_SEC,
-      fillParent: false, // render at natural width so the outer container scrolls it
+      minPxPerSec: pxPerSecRef.current,
+      fillParent: false,
       autoScroll: false,
       hideScrollbar: true,
       normalize: true,
-      interact: false, // seeking is handled by the Timeline click handler
+      interact: false,
     })
     wsRef.current = ws
 
-    ws.on('ready', () => setDuration(ws.getDuration()))
-    ws.on('timeupdate', (t) => setCurrentTime(t))
-    ws.on('play', () => setIsPlaying(true))
-    ws.on('pause', () => setIsPlaying(false))
-    ws.on('finish', () => setIsPlaying(false))
+    const applyZoom = () => {
+      try {
+        ws.zoom(pxPerSecRef.current)
+      } catch {
+        // zoom() throws before decode
+      }
+    }
+
+    const unwire = wireAudioClock(ws, { setCurrentTime, setIsPlaying })
+
+    ws.on('ready', () => {
+      setDuration(ws.getDuration())
+      applyZoom()
+    })
 
     return () => {
+      unwire()
       ws.destroy()
       wsRef.current = null
     }
   }, [wsRef, setDuration, setCurrentTime, setIsPlaying])
 
-  // Load audio whenever a new file is chosen.
   useEffect(() => {
     if (audioUrl && wsRef.current) wsRef.current.load(audioUrl)
   }, [audioUrl, wsRef])
+
+  useEffect(() => {
+    if (wsRef.current) {
+      try {
+        wsRef.current.zoom(pxPerSec)
+      } catch {
+        // not decoded yet
+      }
+    }
+  }, [pxPerSec, duration, wsRef])
+
+  const waveWidth = duration > 0 ? duration * pxPerSec : laneWidth
 
   return (
     <div
       style={{
         position: 'relative',
-        width: totalSeconds * PX_PER_SEC,
+        width: laneWidth,
         height: 64,
         background: 'var(--panel-2)',
         borderBottom: '1px solid var(--border)',
       }}
     >
-      <div ref={containerRef} style={{ width: '100%', height: '100%' }} />
+      <div
+        ref={containerRef}
+        style={{ width: waveWidth, maxWidth: '100%', height: '100%' }}
+      />
       {!audioUrl && (
         <span
           style={{
