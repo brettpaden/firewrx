@@ -4,3 +4,7 @@ node_modules
 dist
 data/*.db
 uploads
+music*
+# generated cue WAVs (rebuild with scripts/build_cues.py) and deploy bundles
+cues
+*.tar.gz
