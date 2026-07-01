@@ -23,13 +23,18 @@ export default function WaveformTrack({ wsRef, laneWidth }) {
       height: 64,
       waveColor: '#5a6473',
       progressColor: '#5a6473',
-      cursorWidth: 0,
+      // Native cursor = the playhead WITHIN the waveform. Drawn in wavesurfer's own
+      // coordinate space, so it can never drift from the peaks.
+      cursorWidth: 2,
+      cursorColor: '#ff7a18', // --accent (literal: CSS vars don't cross the shadow DOM)
       minPxPerSec: pxPerSecRef.current,
       fillParent: false,
       autoScroll: false,
       hideScrollbar: true,
       normalize: true,
-      interact: false,
+      // Native click/drag-to-seek. THIS is the mission-critical, coordinate-exact seek.
+      interact: true,
+      dragToSeek: true,
     })
     wsRef.current = ws
 
@@ -73,6 +78,9 @@ export default function WaveformTrack({ wsRef, laneWidth }) {
 
   return (
     <div
+      // The waveform owns its clicks natively — exclude it from the lane's seek
+      // handler so a single click can't be seeked twice along two code paths.
+      data-no-seek
       style={{
         position: 'relative',
         width: laneWidth,
@@ -83,7 +91,7 @@ export default function WaveformTrack({ wsRef, laneWidth }) {
     >
       <div
         ref={containerRef}
-        style={{ width: waveWidth, maxWidth: '100%', height: '100%' }}
+        style={{ width: waveWidth, height: '100%' }}
       />
       {!audioUrl && (
         <span

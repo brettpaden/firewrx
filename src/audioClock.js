@@ -1,105 +1,44 @@
 import { useShowStore } from './store/useShowStore.js'
 
-// While a user-initiated seek is in flight, ignore media clock reads that still
-// reflect the pre-seek playback position. Without this, RAF / seeking events can
-// snap the playhead back ~1s while audio correctly jumps to the click target.
-let pendingSeek = null
-let seekFallbackTimer = null
-
-export function beginSeek(target) {
-  pendingSeek = target
-  clearTimeout(seekFallbackTimer)
-  seekFallbackTimer = setTimeout(() => {
-    pendingSeek = null
-  }, 800)
-}
-
-export function clearSeek() {
-  pendingSeek = null
-  clearTimeout(seekFallbackTimer)
-  seekFallbackTimer = null
-}
-
-function shouldApplyTime(t) {
-  if (pendingSeek == null) return true
-  if (Math.abs(t - pendingSeek) < 0.2) {
-    clearSeek()
-    return true
-  }
-  return false
-}
+// wavesurfer (its media element) is the SINGLE source of truth for playback time.
+// We only mirror its time/playing state into the store so the DOM overlay playhead
+// (over the clip tracks) and the cue-flash logic can read it. Seeks go straight to
+// wavesurfer via setTime() and come back as 'timeupdate' — no RAF, no gating.
+//
+// MISSION-CRITICAL: clicking the waveform uses wavesurfer's NATIVE interaction, which
+// maps the click to time in the waveform's own coordinate space. Nothing here may
+// re-derive or second-guess that position. (Accurate *seeking* additionally requires
+// constant-bitrate audio — VBR MP3s seek imprecisely; see the upload pipeline.)
 
 export function seekToTime(ws, time) {
   if (!Number.isFinite(time)) return 0
   const dur = ws?.getDuration?.() || useShowStore.getState().duration || 0
   const clamped = dur > 0 ? Math.max(0, Math.min(time, dur)) : Math.max(0, time)
 
-  beginSeek(clamped)
-  useShowStore.getState().setCurrentTime(clamped)
-
   if (ws && dur > 0) {
+    // Emits 'timeupdate' (even while paused) → the bridge updates the store.
     ws.setTime(clamped)
+  } else {
+    // No audio loaded yet: move the overlay directly so the UI still responds.
+    useShowStore.getState().setCurrentTime(clamped)
   }
 
   return clamped
 }
 
 export function wireAudioClock(ws, { setCurrentTime, setIsPlaying }) {
-  const media = ws.getMediaElement()
-  let rafId = 0
-
-  const pushTime = (t, force = false) => {
-    if (!Number.isFinite(t)) return
-    if (!force && !shouldApplyTime(t)) return
-    setCurrentTime(t)
-  }
-
-  const syncFromMedia = (force = false) => {
-    if (!media) return
-    if (!force && media.seeking) return
-    pushTime(media.currentTime, force)
-  }
-
-  const tick = () => {
-    syncFromMedia()
-    rafId = requestAnimationFrame(tick)
-  }
-
-  ws.on('ready', () => syncFromMedia(true))
-
-  // wavesurfer timeupdate can report stale positions during seeks — ignore it.
-  ws.on('timeupdate', () => {})
-
-  // seeking fires with the *old* currentTime in many browsers — never sync from it.
-  ws.on('seeking', () => {})
-
-  ws.on('play', () => {
-    setIsPlaying(true)
-    cancelAnimationFrame(rafId)
-    rafId = requestAnimationFrame(tick)
+  // Fires ~every 16ms while playing AND once on every setTime()/native seek.
+  const offTime = ws.on('timeupdate', (t) => {
+    if (Number.isFinite(t)) setCurrentTime(t)
   })
-
-  ws.on('pause', () => {
-    setIsPlaying(false)
-    cancelAnimationFrame(rafId)
-    syncFromMedia(true)
-  })
-
-  ws.on('finish', () => {
-    setIsPlaying(false)
-    cancelAnimationFrame(rafId)
-  })
-
-  const onSeeked = () => {
-    clearSeek()
-    syncFromMedia(true)
-  }
-
-  media?.addEventListener('seeked', onSeeked)
+  const offPlay = ws.on('play', () => setIsPlaying(true))
+  const offPause = ws.on('pause', () => setIsPlaying(false))
+  const offFinish = ws.on('finish', () => setIsPlaying(false))
 
   return () => {
-    cancelAnimationFrame(rafId)
-    media?.removeEventListener('seeked', onSeeked)
-    clearSeek()
+    offTime()
+    offPlay()
+    offPause()
+    offFinish()
   }
 }

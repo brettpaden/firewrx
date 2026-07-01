@@ -1,0 +1,5 @@
+# firewrx cue generation dependencies.
+# Only needed to (re)generate cue WAVs with build_cues.py / cue_gen.py.
+# Firing prebuilt cues (test_cues.py, run_show.py) needs no third-party packages.
+numpy>=1.21
+scipy>=1.7
